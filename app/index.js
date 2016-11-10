@@ -24,7 +24,7 @@ module.exports = generators.Base.extend({
         var prompts = [{
             type: 'input',
             name: 'mainAppId',
-            message: 'Your mainApp id',
+            message: 'Your main app id',
             default: 'u9ImHd'
         }, {
             type: 'input',
@@ -138,7 +138,8 @@ module.exports = generators.Base.extend({
     end: function() {
         var tips = 
             '\n' +
-            chalk.green('Your app has been created successfully!');
+            chalk.green('Your app has been created successfully!') +
+            '\n';
 
         this.log(tips);
     }
