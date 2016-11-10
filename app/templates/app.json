@@ -1,0 +1,8 @@
+{
+    "AppID": "<%= appId %>",
+    "Name": "<%= appName %>",
+    "DisplayImage": "<%= appId %>.png",
+    "MouseDownImage": "<%= appId %>.png",
+    "Version": "<%= appVersion %>",
+    "Dependency": "1.0.0"
+}
