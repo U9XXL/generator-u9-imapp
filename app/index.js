@@ -97,6 +97,13 @@ module.exports = generators.Base.extend({
                 this.templatePath('home.html'),
                 this.destinationPath('tpls/home.html')
             );
+            this.fs.copyTpl(
+                this.templatePath('home.html'),
+                this.destinationPath('tpls/home.html'), {
+                    appId: this.appId,
+                    appName: this.appName
+                }
+            );
         },
         scripts: function() {
             this.fs.copyTpl(

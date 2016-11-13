@@ -1,5 +1,5 @@
 
-angular.module('Demo')
+angular.module('<%= appId %>')
 
 .constant('DEMOCONTANTS', {
 });
