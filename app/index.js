@@ -25,7 +25,7 @@ module.exports = generators.Base.extend({
             type: 'input',
             name: 'mainAppId',
             message: 'Your main app id',
-            default: 'u9ImHd'
+            default: 'u9ImPDA'
         }, {
             type: 'input',
             name: 'appId',
@@ -52,16 +52,12 @@ module.exports = generators.Base.extend({
     },
 
     writing: {
-        gruntfile: function() {
+        gulpfile: function() {
             this.fs.copyTpl(
-                this.templatePath('Gruntfile.js'),
-                this.destinationPath('Gruntfile.js'), {
+                this.templatePath('gulpfile.js'),
+                this.destinationPath('gulpfile.js'), {
                     appId: this.appId,
-                    styles: 'css',
-                    images: 'img',
-                    scripts: 'js',
-                    temp: '.tmp',
-                    dist: '../../wwws/' + this.appId
+                    mainAppId: this.mainAppId.slice(0, 1).toUpperCase() + this.mainAppId.slice(1)
                 }
             );
         },
@@ -74,11 +70,6 @@ module.exports = generators.Base.extend({
                     appVersion: this.appVersion
                 }
             );
-        },
-        git: function() {
-            this.fs.copy(
-                this.templatePath('gitignore'),
-                this.destinationPath('.gitignore'));
         },
         appLogo: function() {
             this.fs.copy(
@@ -144,7 +135,7 @@ module.exports = generators.Base.extend({
     },
 
     end: function() {
-        var tips = 
+        var tips =
             '\n' +
             chalk.green('Your app has been created successfully!') +
             '\n';
