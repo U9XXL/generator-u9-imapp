@@ -1,6 +1,6 @@
 {
   "name": "generator-u9-imapp",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "快速生成U9智能工厂子应用",
   "main": "app/index.js",
   "scripts": {
