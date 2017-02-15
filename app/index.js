@@ -57,8 +57,25 @@ module.exports = generators.Base.extend({
                 this.templatePath('gulpfile.js'),
                 this.destinationPath('gulpfile.js'), {
                     appId: this.appId,
-                    mainAppId: this.mainAppId.slice(0, 1).toUpperCase() + this.mainAppId.slice(1)
+                    mainAppId: this.mainAppId,
+                    mainAppIdUpper: this.mainAppId.slice(0, 1).toUpperCase() + this.mainAppId.slice(1)
                 }
+            );
+            this.fs.copyTpl(
+                this.templatePath('bower.json'),
+                this.destinationPath('bower.json'), {
+                    appId: this.appId,
+                    appName: this.appName,
+                    appVersion: this.appVersion
+                }
+            );
+            this.fs.copy(
+                this.templatePath('bowerrc'),
+                this.destinationPath('.bowerrc')
+            );
+            this.fs.copy(
+                this.templatePath('gitignore'),
+                this.destinationPath('.gitignore')
             );
         },
         appJSON: function() {
@@ -106,15 +123,26 @@ module.exports = generators.Base.extend({
                 }
             );
             this.fs.copyTpl(
-                this.templatePath('app-dist.js'),
-                this.destinationPath('js/app-dist.js'), {
-                    mainAppId: this.mainAppId,
+                this.templatePath('controllers.js'),
+                this.destinationPath('js/controllers/controllers.js'), {
                     appId: this.appId
                 }
             );
             this.fs.copyTpl(
                 this.templatePath('HomeCtrl.js'),
                 this.destinationPath('js/controllers/' + this.appId + '.HomeCtrl.js'), {
+                    appId: this.appId
+                }
+            );
+            this.fs.copyTpl(
+                this.templatePath('services.js'),
+                this.destinationPath('js/services/services.js'), {
+                    appId: this.appId
+                }
+            );
+            this.fs.copyTpl(
+                this.templatePath('utility.js'),
+                this.destinationPath('js/utility/utility.js'), {
                     appId: this.appId
                 }
             );
@@ -128,9 +156,7 @@ module.exports = generators.Base.extend({
         },
         misc: function() {
             mkdirp('img');
-            mkdirp('js/services');
-            mkdirp('js/filters');
-            mkdirp('js/directives');
+            mkdirp('lib');
         }
     },
 

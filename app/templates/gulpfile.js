@@ -7,9 +7,13 @@ const stylish = require('jshint-stylish');
 const zip = require('gulp-zip');
 const runSequence = require('run-sequence');
 
-const $ = gulpLoadPlugins();
+const $ = gulpLoadPlugins({
+    rename: {
+        'gulp-angular-filesort': 'fileSort'
+    }
+});
 
-const relativePath = '../../<%= mainAppId %>/apps';
+const relativePath = '../../<%= mainAppIdUpper %>/apps';
 const appid = '<%= appId %>';
 
 const config = {
@@ -17,10 +21,35 @@ const config = {
     images: 'img',
     scripts: 'js',
     tpls: 'tpls',
+    lib: 'lib',
     dist: relativePath + '/' + appid
 };
 
 var dev = true;
+
+gulp.task('injectfile', () => {
+    var libInjectOptions = {
+        starttag: '//--inject:lib--//',
+        endtag: '//--endinject--//',
+        transform: function (filepath, file, i, length) {
+            return '<%= mainAppId %>.getFullPath(\'' + filepath + '\', \'<%= appId %>\')' + ((dev || i + 1 < length) ? ',' : '');
+        },
+        addRootSlash: false
+    };
+    var jsInjectOptions = {
+        starttag: '//--inject:js--//',
+        endtag: '//--endinject--//',
+        transform: function (filepath, file, i, length) {
+            return '<%= mainAppId %>.getFullPath(\'' + filepath + '\', \'<%= appId %>\')' + (i + 1 < length ? ',' : '');
+        },
+        addRootSlash: false
+    };
+
+    return gulp.src(path.join(config.scripts, '/app.js'))
+        .pipe($.inject(gulp.src(require('main-bower-files')('**/*.{css,js}'), {read: true, base: config.lib}), libInjectOptions))
+        .pipe($.if(dev, $.inject(gulp.src(path.join(config.scripts, '/*/*.js')).pipe($.fileSort()), jsInjectOptions)))
+        .pipe(gulp.dest(path.join(config.dist, 'js')));
+});
 
 gulp.task('lint', function() {
   return gulp.src(path.join(config.scripts, '/**/*.js'))
@@ -51,11 +80,18 @@ gulp.task('images', () => {
 
 gulp.task('scripts', () => {
     return gulp.src([
-            path.join(config.scripts, 'app-dist.js'),
-            path.join(config.scripts, '/*/*.js')
-        ]).pipe($.concat('app.js'))
+            path.join(config.scripts, '/*/*.js'),
+            path.join(config.dist, config.scripts + '/app.js')
+        ])
+        .pipe($.fileSort())
+        .pipe($.concat('app.js'))
         .pipe($.uglify())
         .pipe(gulp.dest(path.join(config.dist, config.scripts)));
+});
+
+gulp.task('lib', () => {
+    return gulp.src(require('main-bower-files')(), {read: true, base: 'lib'})
+        .pipe(gulp.dest(path.join(config.dist, config.lib)));
 });
 
 gulp.task('tpls', () => {
@@ -77,7 +113,7 @@ gulp.task('config', () => {
     return gulp.src('../config.json').pipe(gulp.dest(relativePath));
 });
 
-gulp.task('build', ['styles', 'images', 'scripts', 'tpls', 'extras', 'config'], () => {
+gulp.task('build', ['styles', 'images', 'scripts', 'lib', 'tpls', 'extras', 'config'], () => {
     return gulp.src(path.join(config.dist, '/**/*')).pipe($.size({ title: 'build', gzip: true }));
 });
 
@@ -88,12 +124,13 @@ gulp.task('zip', () => {
 });
 
 gulp.task('default', () => {
-    runSequence('clean', ['styles', 'lint', 'images', 'tpls', 'extras', 'config'], () => {
+    runSequence('clean', ['styles', 'lint', 'images', 'lib', 'tpls', 'extras', 'config'], 'injectfile', () => {
         gulp.watch('css/**/*.css', ['styles']);
-        gulp.watch('js/**/*.js', ['lint']);
+        gulp.watch('js/**/*.js', ['lint', 'injectfile']);
         gulp.watch('img/**/*', ['images']);
         gulp.watch('tpls/**/*.html', ['tpls']);
-        gulp.watch('*.json', ['extras']);
+        gulp.watch('app.json', ['extras']);
+        gulp.watch('bower.json', ['lib', 'injectfile']);
         gulp.watch('*.{png,jpg,jpeg,gif}', ['extras']);
         gulp.watch('../config.json', ['config']);
     });
@@ -102,6 +139,6 @@ gulp.task('default', () => {
 gulp.task('dist', () => {
     return new Promise(resolve => {
         dev = false;
-        runSequence('clean', 'lint', 'build', 'zip', resolve);
+        runSequence(['clean', 'lint'], 'injectfile', 'build', 'zip', resolve);
     });
 });
