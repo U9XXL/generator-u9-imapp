@@ -8,43 +8,5 @@
   ],
   "license": "MIT",
   "dependencies": {
-  },
-  "overrides": {
-    "jquery": {
-      "ignore": true
-    },
-    "jquery-ui": {
-      "ignore": true
-    },
-    "jquery-ui-touch-punch": {
-      "ignore": true
-    },
-    "angular": {
-      "ignore": true
-    },
-    "angular-animate": {
-      "ignore": true
-    },
-    "angular-sanitize": {
-      "ignore": true
-    },
-    "angular-ui-router": {
-      "ignore": true
-    },
-    "ionic": {
-      "ignore": true
-    },
-    "ionicImPDA": {
-      "ignore": true
-    },
-    "ngCordova": {
-      "ignore": true
-    },
-    "oclazyload": {
-      "ignore": true
-    },
-    "angular-dragdrop": {
-      "ignore": true
-    }
   }
 }
