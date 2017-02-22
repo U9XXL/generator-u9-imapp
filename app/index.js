@@ -147,8 +147,8 @@ module.exports = generators.Base.extend({
                 }
             );
             this.fs.copyTpl(
-                this.templatePath('CONTANTS.js'),
-                this.destinationPath('js/utility/' + this.appId.toUpperCase() + 'CONTANTS.js'), {
+                this.templatePath('CONSTANTS.js'),
+                this.destinationPath('js/utility/' + this.appId.toUpperCase() + 'CONSTANTS.js'), {
                     appId: this.appId,
                     appIdUpper: this.appId.toUpperCase()
                 }

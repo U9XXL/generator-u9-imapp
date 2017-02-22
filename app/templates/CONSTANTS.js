@@ -1,5 +1,5 @@
 
 angular.module('<%= appId %>.utility')
 
-.constant('<%= appIdUpper %>CONTANTS', {
+.constant('<%= appIdUpper %>CONSTANTS', {
 });
