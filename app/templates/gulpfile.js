@@ -102,7 +102,7 @@ gulp.task('tpls', () => {
 
 gulp.task('extras', () => {
     return gulp.src([
-        '*.json',
+        'app.json',
         '*.{png,jpg,jpeg,gif}'
     ], {
         dot: true
