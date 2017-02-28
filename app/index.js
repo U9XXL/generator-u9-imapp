@@ -156,7 +156,6 @@ module.exports = generators.Base.extend({
         },
         misc: function() {
             mkdirp('img');
-            mkdirp('lib');
         }
     },
 

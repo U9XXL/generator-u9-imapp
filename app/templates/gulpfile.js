@@ -1,5 +1,6 @@
 
 const path = require('path');
+const fs = require('fs');
 const gulp = require('gulp');
 const gulpLoadPlugins = require('gulp-load-plugins');
 const del = require('del');
@@ -26,6 +27,14 @@ const config = {
 };
 
 var dev = true;
+
+gulp.task('makeLibDir', function () {
+    return fs.mkdir(config.lib, function (err) {
+        if (err && err.code !== 'EEXIST') {
+            console.error(err);
+        }
+    });
+});
 
 gulp.task('injectfile', () => {
     var libInjectOptions = {
@@ -124,7 +133,7 @@ gulp.task('zip', () => {
 });
 
 gulp.task('default', () => {
-    runSequence('clean', ['styles', 'lint', 'images', 'lib', 'tpls', 'extras', 'config'], 'injectfile', () => {
+    runSequence(['clean', 'makeLibDir'], ['styles', 'lint', 'images', 'lib', 'tpls', 'extras', 'config'], 'injectfile', () => {
         gulp.watch('css/**/*.css', ['styles']);
         gulp.watch('js/**/*.js', ['lint', 'injectfile']);
         gulp.watch('img/**/*', ['images']);
@@ -139,6 +148,6 @@ gulp.task('default', () => {
 gulp.task('dist', () => {
     return new Promise(resolve => {
         dev = false;
-        runSequence(['clean', 'lint'], 'injectfile', 'build', 'zip', resolve);
+        runSequence(['clean', 'lint', 'makeLibDir'], 'injectfile', 'build', 'zip', resolve);
     });
 });
